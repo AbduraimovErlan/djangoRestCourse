@@ -21,6 +21,14 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly, IsAdminUser
 from accounts.serializers import CurrentUserPostsSerializer
 from .permissions import ReadOnly, AuthorOrReadOnly
+from rest_framework.pagination import PageNumberPagination
+
+
+
+class CustomPaginator(PageNumberPagination):
+    page_size = 3
+    page_query_param = 'page'
+    page_size_query_param = 'page_size'
 
 
 
@@ -40,6 +48,7 @@ class PostListCreateView(generics.GenericAPIView,
                          mixins.CreateModelMixin):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_classes = CustomPaginator
     queryset = Post.objects.all()
 
     def perform_create(self, serializer):
